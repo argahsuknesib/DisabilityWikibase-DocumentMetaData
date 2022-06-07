@@ -1,0 +1,2 @@
+should the date be a string or something generic?
+for example, should it be 22 august 2022 or 22/08/2022?

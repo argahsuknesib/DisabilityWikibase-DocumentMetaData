@@ -1,0 +1,24 @@
+The properties for the document metadata ontology of the wikibase,
+
+1. instance of / is a / is an / is a particular / has type / is an individual / is a unique / member of / has class
+3. part of
+4. has wikidata identifier / has wikidata code / wikidata ID
+5. has topic
+6. has definition
+7. according to
+8. mentioned in / found in / seen in / addressed in
+9. has title words
+10. field of study
+11. from project
+12. web address / has url / link / address / document reference link / document link / web content link / blog url / url 
+13. uploaded on / uploaded date
+14. from institution
+15. institution type / type of institution
+16. uploaded by 
+17. role / role in institution
+18. topic
+19. title (of document)
+20. has author / written by / authored by
+21. author's institution / institution of author / author is from institution
+22. type of institution of author
+23. created / date of creation / creation date

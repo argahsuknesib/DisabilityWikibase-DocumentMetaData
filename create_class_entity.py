@@ -20,7 +20,8 @@ class CreateClass:
             'labels': {'en': 'Disability Rights Wikibase', 'fr': 'Wikibase pour les droits des personnes handicapées'},
             'descriptions': {
                 'en': 'Free knowledge graph project by York University , Université Jean Monnet and The QA Company',
-                'fr': "Projet gratuit de graphe de connaissances par l'université de York, l'université Jean Monnet et QA Company"},
+                'fr': "Projet gratuit de graphe de connaissances par l'université de York, l'université Jean Monnet "
+                      "et QA Company"},
             'aliases': {
                 'en': ['Diswiki', 'disability wiki', 'wiki disability', 'wiki rights', 'disability wiki rights',
                        'diswikidata'],
@@ -69,7 +70,8 @@ class CreateClass:
         wikidata_class = pywikibot.ItemPage(self.wikibase_repo)
         wikidata_data = {'labels': {'en': 'Wikidata', 'fr': 'Wikidata'},
                          'descriptions': {
-                             'en': 'free knowledge database project hosted by the Wikimedia Foundation and edited by volunteers',
+                             'en': 'free knowledge database project hosted by the Wikimedia Foundation and edited by '
+                                   'volunteers',
                              'fr': "projet de base de données éditée de manière collaborative"},
                          'aliases': {
                              'en': ['WD', 'wikidata.org', 'www.wikidata.org', 'wikidatawiki', 'd:'],

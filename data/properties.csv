@@ -1,4 +1,4 @@
-Predicate,DataType,Description,Aliases
+Property,DataType,Description,Aliases
 instance of,wikibase-item,relation of type constraint,is a, is an, is a particular, is an individual, is a unique, member of, has class
 part of,wikibase-item,a property showing one is part of the other,
 has wikidata identifier,external-id,Corresponding wikidata entity for the concept,has wikidata code, wikidata ID
@@ -18,3 +18,4 @@ has author,wikibase-item,the author of the document,written by,authored by
 author's institution,wikibase-item,the institution the author belongs to,institution of author,author is from institution
 type of institution of author,wikibase-item,the type of institution the author belongs to,institution type of author,author is of type institution
 created,string,date/time of the document creation,date of creation,creation date
+has text,string, the text of the document,text,contains text

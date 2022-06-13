@@ -1,46 +1,43 @@
-from ast import alias
 import configparser
 import csv
-from distutils.command.config import config
-import os
-from unicodedata import name
-
-from requests import request
 import pywikibot
 from SPARQLWrapper import SPARQLWrapper, JSON
-from pywikibot import config2
 
 config = configparser.ConfigParser()
 config.read('config/application.config.ini')
 
-wikibase = pywikibot.Site("my", "my")
+wikibase = pywikibot.Site('my', 'my')
 sparql = SPARQLWrapper(config.get('wikibase', 'sparqlEndPoint'))
 site = pywikibot.Site()
+wikidata = pywikibot.Site('wikidata', 'wikidata')
 
-wikidata = pywikibot.Site("wikidata", "wikidata")
 
-
-class CreateProperty():
+class CreateProperty:
     def __init__(self, wikibase):
         self.wikibase = wikibase
-        self.wikibase_repo = self.wikibase.data_repository()
+        self.wikibase_repo = wikibase.data_repository()
         self.sparql = SPARQLWrapper(config.get('wikibase', 'sparqlEndPoint'))
-        sparql.class_entities = {}
+        self.class_entities = {}
         self.properties = {}
         self.pywikibot = pywikibot
 
-    def capitalizeFirstLetter(self, word):
-        return word.capitalize().rstrip()
+    def is_not_used(self):
+        pass
 
-    def getItemSparql(label):
+    def capitaliseFirstLetter(self, word):
+        self.is_not_used()
+        return word.capitalize()
+
+    def get_item_with_sparql(self, label):
+        self.is_not_used()
         query = """
-                select ?label ?s where {
-                    ?s ?p ?o .
-                    ?s rdfs:label ?label .
-                    FILTER(lang(?label) = 'en' || lang(?label) = 'fr')
-                    FILTER(?label = '""" + label + """')
-                }
-            """
+            select ?label ?s where {
+                ?s ?p ?o.
+                ?s rdfs:label ?label.
+                FILTER(LANG(?label) = 'en' || LANG(?label) = 'fr')
+                FILTER(?label = '""" + label + """'@en)
+            }
+        """
 
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
@@ -48,55 +45,73 @@ class CreateProperty():
         print(results)
         return results
 
-    def searchItem(label):
-        if label is None:
-            return True
-
-        params = {'action': 'wbsearchentities', 'format': 'json',
-                  'language': 'en', 'type': 'item', 'limit': 1, 'search': label}
-        request = wikibase._simple_request(**params)
-        result = request.submit()
-        print(result)
-
-        return True if result['search']['total'] > 0 else False
-
-    def createProperty(self, nameOfLabel, label, description, datatype, aliases, property_map):
-
-        if (self.capitalizeFirstLetter(nameOfLabel.rstrip())):
+    def processProperty(self, labelstring, label, description, datatype, aliases, property_map):
+        if self.capitaliseFirstLetter(labelstring.rstrip()) in property_map:
+            print("Property already exists: " + labelstring)
             return property_map
-        propertyResult = self.getItemSparql(
-            self.capitalizeFirstLetter(nameOfLabel.rstrip()))
-        if (len(propertyResult['result']['bindings']) == 0):
+
+        property_result = self.get_item_with_sparql(self.capitaliseFirstLetter(labelstring.rstrip()))
+        if len(property_result['results']['bindings']) == 0:
             data = {}
-            print(f'creating the property in the wikibase {nameOfLabel}')
+            print(f"Creating property: {labelstring}")
             data['labels'] = label
             data['descriptions'] = description
-            if (len(aliases) > 0):
+            if len(aliases) > 0:
                 data['aliases'] = aliases
-            addedProperty = pywikibot.PropertyPage(
-                self.wikibase_repo, datatype=datatype)
-            addedProperty.editEntity(data)
-            print(f'The type of property is {addedProperty.type}')
-            print(f'The ID of property is {addedProperty.type}')
-            property_map[self.capitalizeFirstLetter(
-                nameOfLabel.rstrip())] = addedProperty.id
+            new_property = pywikibot.PropertyPage(self.wikibase_repo, datatype=datatype)
+            new_property.editEntity(data)
+
+            print(new_property.type, new_property.id)
+            property_map[self.capitaliseFirstLetter(labelstring.rstrip())] = new_property.id
             return property_map
 
         else:
             data = {}
-            print(f'creating the property {nameOfLabel}')
+            print(f"Creating the property: {labelstring}")
             data['labels'] = label
             data['descriptions'] = description
-            if (len(aliases) > 0):
+            if len(aliases) > 0:
                 data['aliases'] = aliases
-            existingProperty = pywikibot.PropertyPage(
-                self.wikibase_repo, propertyResult['result']['bindings'][0]['s']['value'].split('/')[-1])
-            existingProperty.get()
-            existingProperty.editEntity(data)
-            print(f'The type of property is {existingProperty.type}')
-            print(f'The ID of property is {existingProperty.type}')
-            property_map[self.capitalizeFirstLetter(nameOfLabel.rstrip())] = existingProperty.id
+            existing_property = pywikibot.PropertyPage(self.wikibase_repo,
+                                                       property_result['results']['bindings'][0]['s']['value'].split(
+                                                           "/")[-1])
+            existing_property.get()
+            existing_property.editEntity(data)
+
+            print(existing_property.type, existing_property.id)
+            property_map[self.capitaliseFirstLetter(labelstring.rstrip())] = existing_property.id
             return property_map
 
-        
+    def readPropertyCSV(self, file_name):
+        with open(file_name, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            property_map = {}
+            for row in csv_reader:
+                print(f'Processing the line number of {line_count}')
+                if line_count == 0:
+                    print(f'Column names are {", ".join(row)}')
+                    line_count = line_count + 1
+                else:
+                    try:
+                        description = ""
+                        aliases = ""
+                        if not row[2]:
+                            description = {"en": self.capitaliseFirstLetter(row[0].rstrip() + " : property")}
+                        else:
+                            description = {"en": self.capitaliseFirstLetter(row[2].rstrip())}
+                        if len(row[3]) > 0:
+                            aliases = {"en": self.capitaliseFirstLetter(row[3]).rstrip().split(",")}
+                        label = {"en": row[0].rstrip().lstrip().lower()}
+                        labelstring = row[0].rstrip().lstrip().lower()
+                        datatype = row[1]
+                        property_map = self.processProperty(labelstring, label, description, datatype, aliases,
+                                                            property_map)
+                    except Exception as e:
+                        print(f'the exception is {e}')
+            print(f'Processing is done, {line_count}')
 
+
+if __name__ == "__main__":
+    CreateProperty(wikibase).readPropertyCSV("data/properties.csv")
+    quit(code=None)

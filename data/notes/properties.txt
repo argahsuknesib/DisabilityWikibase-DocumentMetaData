@@ -22,3 +22,7 @@ The properties for the document metadata ontology of the wikibase,
 21. author's institution / institution of author / author is from institution
 22. type of institution of author
 23. created / date of creation / creation date
+24. has text / text / contains text
+
+How to do this?
+25. has content box -> a box of variable size which   can contain content of the text (content box can contain other content box)

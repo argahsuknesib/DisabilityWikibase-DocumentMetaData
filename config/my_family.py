@@ -75,15 +75,15 @@ class Family(family.WikimediaFamily):
         """Default globe for Coordinate datatype."""
         return 'earth'
 
-    # def protocol(self, code):
-    #     return {
-    #         'my': 'https',
-    #     }[code]
-
     def protocol(self, code):
         return {
-            'my': app_config.get('wikibase', 'protocol'),
+            'my': 'http',
         }[code]
+
+    # def protocol(self, code):
+    #     return {
+    #         'my': app_config.get('wikibase', 'protocol'),
+    #     }[code]
 
     def globes(self, code):
         """Supported globes for Coordinate datatype."""

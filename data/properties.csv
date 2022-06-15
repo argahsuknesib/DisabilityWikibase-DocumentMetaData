@@ -10,12 +10,12 @@ has title words,wikibase-item,words contained in the title of the document,
 field of study,wikibase-item,the field of study the particular entity belongs to,
 from project,wikibase-item,the project the particular entity belongs to,
 web address,url,the URL of the source of the document,has url,link,address,document reference link,document link,web content link,blog url,url
-uploaded on,string,date/time of the document upload,
+uploaded on,point in time,date/time of the document upload,
 role,wikibase-item,the role the particular person has in the institution,role in institution
 topic,wikibase-item,entites or topics which define or give detail about the document,
 title,wikibase-item,the title of the document,
 has author,wikibase-item,the author of the document,written by,authored by
 author's institution,wikibase-item,the institution the author belongs to,institution of author,author is from institution
 type of institution of author,wikibase-item,the type of institution the author belongs to,institution type of author,author is of type institution
-created,string,date/time of the document creation,date of creation,creation date
+created,point in time,date/time of the document creation,date of creation,creation date
 has text,string, the text of the document,text,contains text

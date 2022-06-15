@@ -1,6 +1,7 @@
 import configparser
 import csv
 import pywikibot
+import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 config = configparser.ConfigParser()
@@ -113,5 +114,9 @@ class CreateProperty:
 
 
 if __name__ == "__main__":
-    CreateProperty(wikibase).readPropertyCSV("data/properties.csv")
-    quit(code=None)
+    try:
+        url = 'http://demo-disabilitywiki.univ-st-etienne.fr/w/api.php'
+        requests.get(url, verify=False)
+        CreateProperty(wikibase).readPropertyCSV("data/properties.csv")
+    except Exception as e:
+        print(f'the exception is {e}')

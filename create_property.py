@@ -115,8 +115,6 @@ class CreateProperty:
 
 if __name__ == "__main__":
     try:
-        url = 'http://demo-disabilitywiki.univ-st-etienne.fr/w/api.php'
-        requests.get(url, verify=False)
         CreateProperty(wikibase).readPropertyCSV("data/properties.csv")
     except Exception as e:
         print(f'the exception is {e}')

@@ -1,1 +1,0 @@
-(u'WikibaseAdmin', BotPassword(u'Demo-Disability-Wikibase', u'51r0go404v3j83ta6c87eq0lhi68t6as'))
